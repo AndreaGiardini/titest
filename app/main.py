@@ -5,12 +5,12 @@ app/main.py
 """
 
 from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
-from titiler.mosaic.factory import MosaicTilerFactory
 
-from .cache import setup_cache, cached
-from .routes import cog
+from . import rs_cache
+from .rs_cache import setup_cache
 
 from titiler.application import main as titiler_app_main
+from fastapi import Request
 
 app = titiler_app_main.app
 
@@ -18,24 +18,20 @@ app = titiler_app_main.app
 app.add_event_handler("startup", setup_cache)
 add_exception_handlers(app, DEFAULT_STATUS_CODES)
 
-#print(app.routes)
+@app.middleware("tile-cache")
+async def add_tile_cache(request: Request, call_next):
 
-for route in app.routes:
-    if 'tile' in route.path:
-        # Add decorator to APIRoute
-        print(route)
-        #app.routes.remove(route)
-        cached_route = cached(alias="default")(route)
-        app.routes.remove(route)
-        #app.routes.append(cached_route)
+    key = f"{request.url.path}:{request.query_params}"
+    if 'tile' in request.url.path:
+        res = await rs_cache.read_cache(key)
+        # Cached request
+        if res is not None:
+            return res
 
-#app.router.routes
-#app.include_router(cog.router, tags=["Cloud Optimized GeoTIFF"])
+    # Uncached request
+    response = await call_next(request)
 
-# mosaic = MosaicTilerFactory(router_prefix="/mosaicjson")
-# print(mosaic.router.routes)
-# app.include_router(
-#     mosaic.router,
-#     prefix="/mosaicjson",
-#     tags=["MosaicJSON"],
-# )
+    if 'tile' in request.url.path:
+        return await rs_cache.write_cache(key, response)
+    return response
+

@@ -14,6 +14,7 @@ class CacheSettings(BaseSettings):
     endpoint: Optional[str] = None
     ttl: int = 3600
     namespace: str = ""
+    password: str = ""
 
     class Config:
         """model config"""

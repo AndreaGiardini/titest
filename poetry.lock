@@ -109,6 +109,28 @@ files = [
 ]
 
 [[package]]
+name = "cashews"
+version = "7.3.2"
+description = "cache tools with async power"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cashews-7.3.2-py3-none-any.whl", hash = "sha256:05005d3383957c9df5433fff9977d88022444184fd7834ad6664d00487dc1b38"},
+    {file = "cashews-7.3.2.tar.gz", hash = "sha256:08e2ea1525a9d3a264cfa2448189ec44f0253c357a7d40d54d9039108b7f868c"},
+]
+
+[package.dependencies]
+redis = {version = ">=4.3.1,<5.0.1 || >5.0.1", optional = true, markers = "extra == \"redis\""}
+
+[package.extras]
+dill = ["dill"]
+diskcache = ["diskcache (>=5.0.0)"]
+lint = ["mypy (>=1.5.0)", "types-redis"]
+redis = ["redis (>=4.3.1,!=5.0.1)"]
+speedup = ["bitarray (<3.0.0)", "hiredis", "xxhash (<4.0.0)"]
+tests = ["hypothesis (==6.112.2)", "pytest (==8.3.3)", "pytest-asyncio (==0.24.0)", "pytest-cov (==5.0.0)", "pytest-rerunfailures (==14.0)"]
+
+[[package]]
 name = "certifi"
 version = "2024.8.30"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -1477,4 +1499,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "395cb60f2c3e61fe1765c7d6a1d823f675d2f765d0afaa00ef618b2b04fb74aa"
+content-hash = "fd8776240d7b278798b3ca74be4c095b966bac65f3b144f0b6030cb504a8a959"
